@@ -30,6 +30,8 @@ import 'package:app_development_project/presentation/screens/cart_screen.dart';
 import 'package:app_development_project/data/repository/notification_repository.dart';
 import 'package:app_development_project/data/services/notification_service.dart';
 import 'package:app_development_project/presentation/screens/notifications_screen.dart';
+import 'package:app_development_project/data/cache/categories_cache.dart';
+import 'package:app_development_project/data/cache/products_cache.dart';
 
 
 
@@ -49,14 +51,14 @@ Future<void> main() async {
     tokenStorage: tokenStorage,
   );
 
-  // Categories
-  final categoryService = CategoryService(dioClient.dio);
+  final categoriesCache = CategoriesCache();
+  final categoryService = CategoryService(dioClient.dio, categoriesCache);
   final categoryRepository = CategoryRepository(categoryService);
-
+  
   // Products
-  final productService = ProductService(dioClient.dio);
-  final productRepository = ProductRepository(productService);
-
+  final productsCache = ProductsCache();
+final productService = ProductService(dioClient.dio, productsCache);
+final productRepository = ProductRepository(productService);
   // Orders
   final orderService = OrderService(dioClient.dio);
   final orderRepository = OrderRepository(orderService);

@@ -51,7 +51,6 @@ class _HomeViewState extends State<_HomeView> {
   int _selectedDestination = 0;
   final Set<int> _favoriteProducts = {};
 
-  // حالة البحث والفلترة
   final ScrollController _scroll = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
@@ -92,7 +91,6 @@ class _HomeViewState extends State<_HomeView> {
     super.dispose();
   }
 
-  // ───────────── التحميل من الـ API ─────────────
 
   void _reload() {
     context.read<ProductsCubit>().load(
@@ -144,7 +142,12 @@ class _HomeViewState extends State<_HomeView> {
     });
   }
 
-  // ───────────── شاشة الفلترة ─────────────
+    Future<void> _onRefresh() async {
+    await context.read<CategoryCubit>().getCategories();
+    _reload();
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+  }
+
 
   Future<void> _openFilterSheet() async {
     final minCtrl = TextEditingController(text: _minPrice?.toString() ?? '');
@@ -409,7 +412,10 @@ class _HomeViewState extends State<_HomeView> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: _onRefresh,
+        child : SingleChildScrollView(
         controller: _scroll,
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         child: Center(
@@ -530,6 +536,7 @@ class _HomeViewState extends State<_HomeView> {
             ),
           ),
         ),
+      ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

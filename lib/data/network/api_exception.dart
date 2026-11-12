@@ -4,10 +4,8 @@ class ApiException implements Exception {
   final String message;
   final int? statusCode;
 
-  /// أخطاء الـ validation: { "items.0.quantity": ["..."] }
   final Map<String, List<String>> fieldErrors;
 
-  /// true إذا المشكلة بالشبكة (انقطاع نت / timeout) مو برد الباك
   final bool isNetwork;
 
   ApiException(
@@ -85,9 +83,15 @@ class ApiException implements Exception {
         return ApiException(
           'Connection timed out. Please try again.',
           isNetwork: true,
-        );
+         );
+      // case DioExceptionType.connectionError:
+      //   return ApiException('No internet connection.', isNetwork: true);
       case DioExceptionType.connectionError:
-        return ApiException('No internet connection.', isNetwork: true);
+  return ApiException(
+    'Cannot reach the server (${e.requestOptions.uri.host}). '
+    'Check that the backend is running and the base URL is correct.',
+    isNetwork: true,
+  );
       default:
         break;
     }

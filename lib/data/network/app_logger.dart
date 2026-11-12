@@ -48,6 +48,25 @@ class AppLogger {
     final s = body?.toString() ?? 'null';
     return s.length > _maxBody ? '${s.substring(0, _maxBody)}…' : s;
   }
+
+  
+  static void etag(
+    String tag, {
+    int? status,
+    String? requestIfNoneMatch,
+    String? responseEtag,
+    bool fromCache = false,
+  }) {
+    if (!kDebugMode) return;
+    debugPrint(
+      '[ETAG] $tag\n'
+      '      status: $status\n'
+      '      If-None-Match (sent): ${requestIfNoneMatch ?? '-'}\n'
+      '      ETag (response): ${responseEtag ?? '-'}\n'
+      '      fromCache: $fromCache',
+    );
+  }
+
 }
 
 class AppBlocObserver extends BlocObserver {
